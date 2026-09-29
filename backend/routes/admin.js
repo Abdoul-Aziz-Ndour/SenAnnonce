@@ -20,6 +20,41 @@ router.get('/stats', async (req, res) => {
   }
 });
 
+// GET évolution (30 derniers jours)
+router.get('/stats/evolution', async (req, res) => {
+  try {
+    const jours = 30;
+    const dateDebut = new Date();
+    dateDebut.setDate(dateDebut.getDate() - jours);
+
+    const usersParJour = await User.aggregate([
+      { $match: { createdAt: { $gte: dateDebut } } },
+      { $group: { _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } }, count: { $sum: 1 } } },
+      { $sort: { _id: 1 } },
+    ]);
+
+    const annoncesParJour = await Annonce.aggregate([
+      { $match: { createdAt: { $gte: dateDebut } } },
+      { $group: { _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } }, count: { $sum: 1 } } },
+      { $sort: { _id: 1 } },
+    ]);
+
+    const jourMap = {};
+    for (let i = jours - 1; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      const key = d.toISOString().slice(0, 10);
+      jourMap[key] = { date: key, utilisateurs: 0, annonces: 0 };
+    }
+    usersParJour.forEach((u) => { if (jourMap[u._id]) jourMap[u._id].utilisateurs = u.count; });
+    annoncesParJour.forEach((a) => { if (jourMap[a._id]) jourMap[a._id].annonces = a.count; });
+
+    res.json(Object.values(jourMap));
+  } catch (err) {
+    res.status(500).json({ message: 'Erreur serveur', error: err.message });
+  }
+});
+
 // GET tous les utilisateurs
 router.get('/utilisateurs', async (req, res) => {
   const users = await User.find().select('-motDePasse').sort('-createdAt');
@@ -54,7 +89,7 @@ router.patch('/annonces/:id/valider', async (req, res) => {
     const annonce = await Annonce.findByIdAndUpdate(
       req.params.id,
       { statut: 'validee', signalements: 0 },
-      { new: true }
+      { returnDocument: 'after' }
     );
     if (!annonce) return res.status(404).json({ message: 'Annonce introuvable' });
     res.json(annonce);

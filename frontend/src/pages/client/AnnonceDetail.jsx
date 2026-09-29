@@ -8,6 +8,8 @@ const AnnonceDetail = () => {
   const { id } = useParams();
   const [annonce, setAnnonce] = useState(null);
   const [signale, setSignale] = useState(false);
+  const [commande, setCommande] = useState(false);
+  const [message, setMessage] = useState('');
   const { user } = useAuth();
   const navigate = useNavigate();
 
@@ -30,6 +32,18 @@ const AnnonceDetail = () => {
     if (!window.confirm('Signaler cette annonce comme inappropriée ?')) return;
     await api.post(`/annonces/${id}/signaler`);
     setSignale(true);
+  };
+
+  const commander = async () => {
+    if (!user) return navigate('/connexion');
+    if (!window.confirm('Confirmer la commande de cet article ?')) return;
+    try {
+      await api.post('/commandes', { annonceId: id });
+      setCommande(true);
+      setMessage('✅ Commande envoyée au vendeur !');
+    } catch (err) {
+      setMessage(err.response?.data?.message || 'Erreur lors de la commande');
+    }
   };
 
   if (!annonce) return <div className="page">Chargement...</div>;
@@ -67,10 +81,14 @@ const AnnonceDetail = () => {
         </div>
       </div>
 
+      {message && (
+        <div className={message.startsWith('✅') ? 'alert-success' : 'alert-error'}>{message}</div>
+      )}
+
       <div className="detail-actions">
-        {annonce.utilisateur?.telephone && (
-          <a href={`tel:${annonce.utilisateur.telephone}`} className="btn-secondary">Appeler</a>
-        )}
+        <button className="btn-secondary" onClick={commander} disabled={commande}>
+          {commande ? 'Commande envoyée' : 'Commander'}
+        </button>
         <button className="btn-primary" onClick={envoyerMessage}>Envoyer un message</button>
       </div>
     </div>

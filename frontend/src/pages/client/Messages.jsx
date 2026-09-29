@@ -22,6 +22,9 @@ const Messages = () => {
             <img src={conv.contact.photo || 'https://via.placeholder.com/50'} alt={conv.contact.nom} />
             <div className="conversation-info">
               <p className="conversation-nom">{conv.contact.prenom} {conv.contact.nom}</p>
+              {conv.dernierMessage.annonce && (
+                <p className="conversation-annonce">📋 {conv.dernierMessage.annonce.titre}</p>
+              )}
               <p className="conversation-preview">{conv.dernierMessage.contenu}</p>
             </div>
             {conv.nonLus > 0 && <span className="badge-count">{conv.nonLus}</span>}

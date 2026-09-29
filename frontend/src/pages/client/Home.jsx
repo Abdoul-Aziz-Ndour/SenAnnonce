@@ -11,7 +11,7 @@ const Home = () => {
 
   useEffect(() => {
     api.get('/categories').then((res) => setCategories(res.data));
-    api.get('/annonces').then((res) => setAnnonces(res.data.slice(0, 6)));
+    api.get('/annonces').then((res) => setAnnonces(res.data.slice(0, 8)));
   }, []);
 
   return (
@@ -60,7 +60,7 @@ const Home = () => {
             <div className="annonce-info">
               <p className="annonce-titre">{a.titre}</p>
               <p className="annonce-prix">{a.prix.toLocaleString()} FCFA</p>
-              <p className="annonce-ville">{a.ville}</p>
+              <p className="annonce-ville">{a.categorie?.nom}</p>
             </div>
           </Link>
         ))}

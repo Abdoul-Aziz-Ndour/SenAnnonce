@@ -23,7 +23,7 @@ router.post('/', protect, admin, async (req, res) => {
 // PUT modifier (admin)
 router.put('/:id', protect, admin, async (req, res) => {
   try {
-    const categorie = await Category.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const categorie = await Category.findByIdAndUpdate(req.params.id, req.body, { returnDocument: 'after' });
     res.json(categorie);
   } catch (err) {
     res.status(500).json({ message: 'Erreur serveur', error: err.message });

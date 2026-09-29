@@ -8,11 +8,13 @@ const Profile = () => {
 
   const menu = [
     { to: '/profil/infos', label: 'Informations personnelles', icon: '👤' },
-    ...(isVendeur ? [{ to: '/mes-annonces', label: 'Mes annonces', icon: '📋' }] : []),
-    { to: '/favoris', label: 'Favoris', icon: '❤️' },
+    ...(isVendeur ? [
+      { to: '/mes-annonces', label: 'Mes annonces', icon: '📋' },
+      { to: '/commandes', label: 'Commandes reçues', icon: '🛒' },
+    ] : []),
+    ...(!isVendeur ? [{ to: '/favoris', label: 'Favoris', icon: '❤️' }] : []),
     { to: '/messages', label: 'Messages', icon: '💬' },
     { to: '/notifications', label: 'Notifications', icon: '🔔' },
-    { to: '/parametres', label: 'Paramètres', icon: '⚙️' },
   ];
 
   const handleLogout = () => {

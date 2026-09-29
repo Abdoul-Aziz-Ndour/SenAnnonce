@@ -50,7 +50,7 @@ router.get('/:id', async (req, res) => {
     const annonce = await Annonce.findByIdAndUpdate(
       req.params.id,
       { $inc: { vues: 1 } },
-      { new: true }
+      { returnDocument: 'after' }
     )
       .populate('categorie', 'nom icone')
       .populate('utilisateur', 'nom prenom photo telephone createdAt');
@@ -138,7 +138,7 @@ router.post('/:id/signaler', protect, async (req, res) => {
     const annonce = await Annonce.findByIdAndUpdate(
       req.params.id,
       { $inc: { signalements: 1 } },
-      { new: true }
+      { returnDocument: 'after' }
     );
     if (!annonce) return res.status(404).json({ message: 'Annonce introuvable' });
     res.json({ message: 'Annonce signalée, merci pour votre vigilance' });

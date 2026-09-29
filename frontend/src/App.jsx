@@ -19,8 +19,11 @@ import MyAnnonces from './pages/client/MyAnnonces';
 import Messages from './pages/client/Messages';
 import Conversation from './pages/client/Conversation';
 import Profile from './pages/client/Profile';
+import InfosPersonnelles from './pages/client/InfosPersonnelles';
 import Notifications from './pages/client/Notifications';
 import Favoris from './pages/client/Favoris';
+import CommandesRecues from './pages/client/CommandesRecues';
+import InfosVendeur from './pages/client/InfosVendeur';
 
 import Dashboard from './pages/admin/Dashboard';
 import Users from './pages/admin/Users';
@@ -41,6 +44,7 @@ function App() {
           <Route path="/inscription-prestataire" element={<RegisterVendeur />} />
           <Route path="/mot-de-passe-oublie" element={<ForgotPassword />} />
           <Route path="/conversation/:contactId" element={<PrivateRoute><Conversation /></PrivateRoute>} />
+		
 
           <Route element={<RoleLayout />}>
             <Route path="/" element={<HomeGate />} />
@@ -49,13 +53,16 @@ function App() {
             <Route path="/favoris" element={<PrivateRoute roles={['client', 'prestataire', 'admin']}><Favoris /></PrivateRoute>} />
             <Route path="/publier" element={<PrivateRoute roles={['prestataire', 'admin']}><PublishAnnonce /></PrivateRoute>} />
             <Route path="/mes-annonces" element={<PrivateRoute roles={['prestataire', 'admin']}><MyAnnonces /></PrivateRoute>} />
+		<Route path="/commandes" element={<PrivateRoute roles={['prestataire', 'admin']}><CommandesRecues /></PrivateRoute>} />
             <Route path="/messages" element={<PrivateRoute><Messages /></PrivateRoute>} />
             <Route path="/profil" element={<PrivateRoute><Profile /></PrivateRoute>} />
+		<Route path="/profil/infos" element={<PrivateRoute><InfosVendeur /></PrivateRoute>} />
             <Route path="/notifications" element={<PrivateRoute><Notifications /></PrivateRoute>} />
           </Route>
 
           <Route element={<PrivateRoute adminOnly><AdminLayout /></PrivateRoute>}>
             <Route path="/admin" element={<Dashboard />} />
+<Route path="/profil-vendeur" element={<InfosVendeur />} />
             <Route path="/admin/utilisateurs" element={<Users />} />
             <Route path="/admin/annonces" element={<AnnoncesAdmin />} />
             <Route path="/admin/categories" element={<CategoriesAdmin />} />
