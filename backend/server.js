@@ -29,11 +29,6 @@ app.use('/api/annonces', require('./routes/annonces'));
 app.use('/api/messages', require('./routes/messages'));
 app.use('/api/admin', require('./routes/admin'));
 app.use('/api/commandes', require('./routes/commandes'));
-app.get('/api/debug-user/:id', async (req, res) => {
-  const User = require('./models/User');
-  const user = await User.findById(req.params.id).select('email nom prenom role');
-  res.json(user);
-});
 
 // Gestion des erreurs 404
 app.use((req, res) => {
